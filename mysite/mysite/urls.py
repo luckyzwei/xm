@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from xm.views.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    url(r'^getcatalog/$', GetCatalog),
+    url(r'^getonecatalog/$', GetOneCatalog),
 ]

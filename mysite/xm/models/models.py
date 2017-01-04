@@ -8,6 +8,8 @@ from django.utils import timezone
 
 class Catalog(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    zh_name = models.CharField(max_length=50, default="")
+    picurl = models.CharField(max_length=200, default="")
     class Meta:
         db_table = u'catalog'
         app_label = u'xm'
