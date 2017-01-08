@@ -26,7 +26,7 @@ SECRET_KEY = '0&f1r5e%d93%fsyf9c&j#sk7m&a%ns@s!2bh+_f-^g#mc$b-r9'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-ONEPAGENUM = 10
+ONEPAGENUM = 20
 PICURL_PREFEX = "https://pic-10073312.file.myqcloud.com"
 
 # Application definition
@@ -130,3 +130,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+SITE_ROOT = os.path.dirname(os.path.abspath(__file__))
+SITE_ROOT = os.path.abspath(os.path.join(SITE_ROOT,'../'))
+STATIC_ROOT = os.path.join(SITE_ROOT,'static')

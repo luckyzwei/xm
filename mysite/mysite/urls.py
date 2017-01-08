@@ -22,4 +22,5 @@ urlpatterns = [
 
     url(r'^getcatalog/$', GetCatalog),
     url(r'^getonecatalog/$', GetOneCatalog),
+    url(r'^getoneitem/$', GetOneItem),
 ]

@@ -4,10 +4,11 @@ import os,sys
 import requests
 from bs4 import BeautifulSoup
 
-timeout = 5 #超时记为5秒
+timeout = 10 #超时记为5秒
 headers = {"Host":"m.wujiecao.cn", "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8","Accept-Encoding":"gzip, deflate, sdch","Accept-Language":"zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4","Refere":"http://m.wujiecao.cn/xieemanhua","User-Agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1"}
 allpageurl = {
         "xm":u"http://m.wujiecao.cn/xieemanhua/list_1_%d.html",
+    "huanken":u"http://m.wujiecao.cn/huanken/list_3_%d.html",
     "sexiaojie":u"http://m.wujiecao.cn/sexijuntuan/list_2_%d.html"}
 
 prjpath =  os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'mysite'))
@@ -101,6 +102,9 @@ if __name__ == '__main__':
     #addcatalog('xm')
     #for i in range(1,87):
     #    getonepage('xm',i)
-    addcatalog('sexiaojie')
-    for i in range(1,30):
-        getonepage('sexiaojie',i)
+    #addcatalog('sexiaojie')
+    #for i in range(1,30):
+    #    getonepage('sexiaojie',i)
+    addcatalog('huanken')
+    for i in range(21,23):
+        getonepage('huanken',i)

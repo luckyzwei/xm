@@ -29,9 +29,10 @@ cos_client = CosClient(appid, secret_id, secret_key)
 
 def download_pic(url):
     local_filename = url.split('/')[-1]
+    print "local_filename:%s" % local_filename
     local_path = downloadpath + local_filename
     #首先删除掉
-    os.system("rm %s -f" % local_filename)
+    os.system((u"rm %s -f" % local_filename).encode("utf-8"))
     try:
         r = requests.get(url, stream=True, timeout=downloadtimeout, headers=headers)
     except BaseException, e:
@@ -59,7 +60,7 @@ def process_pic_url(url):
     request = UploadFileRequest(qcloud_bucket, qcloud_filepath,filepath)
     obj = cos_client.upload_file(request)
     #删除文件
-    os.system('rm %s -f' % filepath)
+    os.system((u'rm %s -f' % filepath).encode("utf-8"))
     if obj["code"]  == 0:
         print "upload [%s] success" % url
         return True,qcloud_filepath
