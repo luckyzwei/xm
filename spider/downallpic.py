@@ -1,17 +1,17 @@
 #coding:utf-8
 
-timeout = 5
+timeout=5
 import requests
 import sys
 import os
 from qcloud_cos import *
 
-qcloud_bucket=u"pic"
-qcloud_dirname=u"picf"
+qcloud_bucket=u'pic'
+qcloud_dirname=u'picf'
 downloadtimeout = 10 #下载图片超时10秒
-downloadpath = u'./download/'
-headers = {"Accept":"image/webp,*/*;q=0.8", "User-Agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36","Accept-Language":"zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4","Referer":"http://m.wujiecao.cn/"}
+downloadpath = u'./download'
 
+headers = {"Accept":"image/webp,*/*;q=0.8", "User-Agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.132 Safari/537.36","Accept-Language":"zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4","Referer":"http://www.quhua.com/"}
 prjpath =  os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'mysite'))
 sys.path.append(prjpath+"/")
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
@@ -25,8 +25,6 @@ appid = 10073312
 secret_id = u'AKIDpeI0azfFGE75zhzZotnV1fDnHc8Wr3GK'
 secret_key = u'AF9sT3mOp5A9OZZRn4A5oQrRuCICueFe'
 cos_client = CosClient(appid, secret_id, secret_key)
-
-
 
 def download_pic(url):
     local_filename = url.split('/')[-1]
@@ -55,11 +53,12 @@ def process_pic_url(url):
     ret,msg,filepath,filename = download_pic(url)
     if ret != True:
         print "process [%s] error.msg:%s" % (url, msg)
-        return False,""
-    #已经下载到了filepath路径上了，上传到对象存储系统中
-    qcloud_filepath = "/%s/%s" % (qcloud_dirname,filename)
-    request = UploadFileRequest(qcloud_bucket, qcloud_filepath,filepath)
+        return False, ""
+    #已经下载到了filepath路径下了，上传到对象存储系统中
+    qcloud_filepath = "/%s/%s" % (qcloud_dirname, filename)
+    request = UploadFileRequest(qcloud_bucket, qcloud_filepath, filepath)
     obj = cos_client.upload_file(request)
+
     #删除文件
     os.system((u'rm %s -f' % filepath).encode("utf-8"))
     if obj["code"]  == 0:
@@ -73,18 +72,26 @@ def process_pic_url(url):
         return False,""
 
 def process_all_imgs():
-    itemlist = Itemlist.objects.filter(hasdownpic=0)
+    itemlist = Itemlist.objects.filter(hasdownpic = 0 )
     for item in itemlist:
-        #下载小图和下载大图
+        failednum  = 0
+        piclist = Piclist.objects.filter(owner=item)
+        #现在小图和下载大图
         ret,urlpath = process_pic_url(item.smalllpicurl_old)
         if ret:
             item.smalllpicurl = urlpath
-        ret,urlpath = process_pic_url(item.bigpicurl_old)
-        if ret:
-            item.bigpicurl = urlpath
-        item.hasdownpic = 1
-        item.save()
-        #print("id:%d"%item.id)
+        for picobj in piclist:
+            if picobj.hasdownpic == 0:
+                ret,urlpath = process_pic_url(picobj.pic_url_old)
+                if ret:
+                    picobj.pic_url = urlpath
+                    picobj.hasdownpic = 1
+                    picobj.save()
+                else:
+                    failednum += 1
+        if failednum == 0:
+            item.hasdownpic = 1
+            item.save()
+
 if __name__ == "__main__":
     process_all_imgs()
-
