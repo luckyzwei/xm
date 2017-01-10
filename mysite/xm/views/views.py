@@ -13,6 +13,7 @@ def ConvertPicUrl(itemlist):
     newlist = []
     for item in itemlist:
         item.picurl = settings.PICURL_PREFEX + item.picurl
+        item.bigpicurl = settings.PICURL_PREFEX + item.bigpicurl
         newlist.append(item)
     return newlist
 def ConvertItemUrl(itemlist,beginindex):
@@ -40,26 +41,38 @@ def GetCatalog(request):
             newcataloglist.append(catalog)
     return JsonResponse({"ret":0,"cataloglist":newcataloglist})
 
+def ConvertDes(des):
+    if len(des) > settings.DESNUM:
+        return des[0:20] + "..."
+    return des
+
 
 def GetOneCatalog(request):
     page = 1
     try:
         catalogid = int(request.GET["id"])
         page = int(request.GET['page'])
+        sort = int(request.GET['sort']) #sort为0表示正序,为1表示倒序
     except:
         return JsonResponse({"ret":-1, "msg":u"请传入正确的参数"})
     try:
         catalogobj = Catalog.objects.get(id = catalogid)
+        catalogobj.picurl = settings.PICURL_PREFEX + catalogobj.picurl
+        catalogobj.bigpicurl = settings.PICURL_PREFEX + catalogobj.bigpicurl
+        catalogobj.description = ConvertDes(catalogobj.description)
     except:
         return JsonResponse({'ret':-1, 'msg':u'找不到对象!'})
     if page < 1:
         page = 1
+    flag = "id"
+    if sort == 1:
+        flag = "-id"
     onepagenum = settings.ONEPAGENUM
     totle_count = Itemlist.objects.filter(catalog=catalogobj).count()
     totle_page = totle_count/onepagenum
-    itemlist = Itemlist.objects.filter(catalog=catalogobj).order_by("id")[(page-1)*onepagenum:page*onepagenum]
+    itemlist = Itemlist.objects.filter(catalog=catalogobj).order_by(flag)[(page-1)*onepagenum:page*onepagenum]
     itemlist = ConvertItemUrl(itemlist,(page-1)*onepagenum)
-    return JsonResponse({"ret":0,"itemlist":itemlist,"totle_page":totle_page})
+    return JsonResponse({"ret":0,"itemlist":itemlist,"totle_page":totle_page,"catalog":catalogobj})
 
 def GetOneItem(request):
     try:

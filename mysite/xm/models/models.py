@@ -13,6 +13,7 @@ class Catalog(models.Model):
     parent_name = models.CharField(max_length=256, default="") #父级目录
     visibal = models.IntegerField(default=1); #默认可见
     bigpicurl = models.CharField(max_length=256, default="")
+    description = models.CharField(max_length=256, default="")
     class Meta:
         db_table = u'catalog'
         app_label = u'xm'

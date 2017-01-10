@@ -28,6 +28,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 ONEPAGENUM = 20
+DESNUM = 40
 PICURL_PREFEX = "https://pic-10073312.file.myqcloud.com"
 
 # Application definition
