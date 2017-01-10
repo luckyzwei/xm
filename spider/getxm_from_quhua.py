@@ -105,7 +105,7 @@ def getoneiteminmh(url, huashu, smallpic, title, catalog):
     for imgitem in imglist:
         imgsrc = imgitem['src']
         print("index:%d url:%s" % (index, imgsrc))
-        piclist = Piclist.objects.filter(owner=itemobj)
+        piclist = Piclist.objects.filter(owner=itemobj,index=index)
         if len(piclist) > 0:
             picobj = piclist[0]
             picobj.delete()

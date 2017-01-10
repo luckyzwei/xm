@@ -72,7 +72,7 @@ def process_pic_url(url):
         return False,""
 
 def process_all_imgs():
-    itemlist = Itemlist.objects.filter(hasdownpic = 0 )
+    itemlist = Itemlist.objects.all().exclude(index = -3)
     for item in itemlist:
         failednum  = 0
         piclist = Piclist.objects.filter(owner=item)
